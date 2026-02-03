@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Compass v4</title>
+    <style>
+        :root { 
+            --bg: #121212; --card: #1e1e1e; --primary: #3a86ff; 
+            --text: #e0e0e0; --secondary: #4a4e69; --accent: #00f5d4;
+        }
+        body { 
+            font-family: -apple-system, sans-serif; background: var(--bg); 
+            color: var(--text); margin: 0; display: flex; 
+            justify-content: center; align-items: center; height: 100vh; 
+        }
+        #app { 
+            background: var(--card); width: 85%; max-width: 400px; 
+            padding: 30px; border-radius: 24px; text-align: center; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .hidden { display: none; }
+        h1 { color: var(--primary); margin-bottom: 25px; }
+        h2 { font-size: 1.4rem; margin-bottom: 10px; }
+        p { color: #b0b0b0; line-height: 1.5; min-height: 60px; margin-bottom: 20px; }
+        
+        button { 
+            background: var(--primary); color: white; border: none; 
+            padding: 18px; border-radius: 16px; font-size: 1.1rem; 
+            font-weight: 600; width: 100%; cursor: pointer; margin-top: 10px;
+        }
+        .timer-btn { background: transparent; border: 2px solid var(--accent); color: var(--accent); margin-bottom: 15px; }
+        .secondary { background: #333; color: #888; margin-top: 20px; }
+        
+        #timer-display { font-size: 3.5rem; font-weight: bold; color: var(--accent); margin-bottom: 10px; }
+        input { 
+            width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--secondary);
+            background: #2a2a2a; color: white; font-size: 1rem; margin-bottom: 15px; box-sizing: border-box;
+        }
+        .progress { font-size: 0.7rem; color: #555; letter-spacing: 2px; margin-bottom: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div id="menu">
+        <h1>Daily Compass</h1>
+        <button onclick="startRoutine('morning')">Morning Routine</button>
+        <button onclick="startRoutine('reset')" class="secondary">Mid-Day Reset</button>
+    </div>
+
+    <div id="task-view" class="hidden">
+        <div class="progress" id="progress-text">STEP 1</div>
+        <h2 id="task-title">Task</h2>
+        
+        <div id="timer-container" class="hidden">
+            <div id="timer-display">00</div>
+            <button id="start-timer-btn" class="timer-btn" onclick="runTimer()">Start Timer</button>
+        </div>
+
+        <div id="input-container" class="hidden">
+            <input type="text" id="user-input" placeholder="Enter your thoughts...">
+        </div>
+
+        <p id="task-desc">Description</p>
+        <button id="next-btn" onclick="nextTask()">Complete Step</button>
+    </div>
+</div>
+
+<script>
+    const routines = {
+        morning: [
+            { t: "60s Wakeup Reset", d: "Breathe. Stay in the moment. Notice you are awake.", time: 60 },
+            { t: "Morning Light", d: "Open curtains or step outside for natural light.", time: 120 },
+            { t: "Hydrate", d: "Drink a full glass of water before that coffee!" },
+            { t: "Brush Teeth", d: "Fresh breath, fresh start." },
+            { t: "Put on Clothes", d: "Dress for the person you want to be today." },
+            { t: "Small Victory", d: "Make your bed. Accomplish your first goal." },
+            { t: "10 Deep Breaths", d: "Reset your nervous system for a calm day.", time: 45 },
+            { t: "60s Movement", d: "Stretch, squat, or shake it out.", time: 60 },
+            { t: "Take a Shower", d: "Refresh and wake up your senses." },
+            { t: "Happiness Anchor", d: "Recall a joy or play your favorite song." },
+            { t: "The Intention", d: "Decide on your emotional focus for today.", input: "Today's Intention: " },
+            { t: "Gratitude Scan", d: "One thing you're genuinely glad to have.", time: 30 },
+            { t: "Negative Input Shield", d: "Keep the phone away from news/socials for now." },
+            { t: "Breakfast!", d: "Fuel your body for a great day ahead." }
+        ],
+        reset: [
+            { t: "24-Hour Promise", d: "Re-commit to one small action.", input: "New Promise: " },
+            { t: "Direction Filter", d: "Toward or Away from your goals?" },
+            { t: "Useful Rule", d: "Be useful to one person now." },
+            { t: "Identity Shift", d: "Say: 'I am building direction.'" }
+        ]
+    };
+
+    let currentRoutine = [];
+    let currentIndex = 0;
+    let timerInterval;
+    let timeLeft = 0;
+    let summary = [];
+
+    function startRoutine(type) {
+        currentRoutine = routines[type];
+        currentIndex = 0;
+        summary = [];
+        document.getElementById('menu').classList.add('hidden');
+        document.getElementById('task-view').classList.remove('hidden');
+        showTask();
+    }
+
+    function showTask() {
+        const task = currentRoutine[currentIndex];
+        clearInterval(timerInterval);
+        
+        document.getElementById('progress-text').innerText = `STEP ${currentIndex + 1} OF ${currentRoutine.length}`;
+        document.getElementById('task-title').innerText = task.t;
+        document.getElementById('task-desc').innerText = task.d;
+
+        const tContainer = document.getElementById('timer-container');
+        if (task.time) {
+            tContainer.classList.remove('hidden');
+            timeLeft = task.time;
+            document.getElementById('timer-display').innerText = timeLeft;
+            document.getElementById('start-timer-btn').classList.remove('hidden');
+        } else {
+            tContainer.classList.add('hidden');
+        }
+
+        const iContainer = document.getElementById('input-container');
+        const inputField = document.getElementById('user-input');
+        inputField.value = "";
+        if (task.input) {
+            iContainer.classList.remove('hidden');
+        } else {
+            iContainer.classList.add('hidden');
+        }
+    }
+
+    function runTimer() {
+        document.getElementById('start-timer-btn').classList.add('hidden');
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-display').innerText = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById('timer-display').innerText = "DONE";
+            }
+        }, 1000);
+    }
+
+    function nextTask() {
+        const task = currentRoutine[currentIndex];
+        const val = document.getElementById('user-input').value;
+        if (task.input && val) summary.push(task.input + val);
+
+        currentIndex++;
+        if (currentIndex < currentRoutine.length) {
+            showTask();
+        } else {
+            let finishMsg = "Routine Complete!\n\n" + (summary.length ? summary.join('\n') : "Go crush it!");
+            alert(finishMsg);
+            location.reload();
+        }
+    }
+</script>
+
+</body>
+</html>
