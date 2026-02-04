@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Compass v4</title>
+    <title>Daily Compass v6</title>
     <style>
         :root { 
             --bg: #121212; --card: #1e1e1e; --primary: #3a86ff; 
@@ -59,7 +59,7 @@
         </div>
 
         <div id="input-container" class="hidden">
-            <input type="text" id="user-input" placeholder="Enter your thoughts...">
+            <input type="text" id="user-input" placeholder="Type here...">
         </div>
 
         <p id="task-desc">Description</p>
@@ -71,19 +71,19 @@
     const routines = {
         morning: [
             { t: "60s Wakeup Reset", d: "Breathe. Stay in the moment. Notice you are awake.", time: 60 },
-            { t: "Morning Light", d: "Open curtains or step outside for natural light.", time: 120 },
-            { t: "Hydrate", d: "Drink a full glass of water before that coffee!" },
-            { t: "Brush Teeth", d: "Fresh breath, fresh start." },
-            { t: "Put on Clothes", d: "Dress for the person you want to be today." },
-            { t: "Small Victory", d: "Make your bed. Accomplish your first goal." },
-            { t: "10 Deep Breaths", d: "Reset your nervous system for a calm day.", time: 45 },
+            { t: "Hydrate", d: "Drink a full glass of water. Wake up your organs." },
+            { t: "Morning Light", d: "Natural light resets your internal clock.", time: 120 },
+            { t: "Brush Teeth", d: "Clean slate, fresh start." },
+            { t: "Small Victory", d: "Make your bed. Prove you can finish a task." },
             { t: "60s Movement", d: "Stretch, squat, or shake it out.", time: 60 },
-            { t: "Take a Shower", d: "Refresh and wake up your senses." },
+            { t: "10 Deep Breaths", d: "Reset your nervous system for a calm day.", time: 45 },
+            { t: "Take a Shower", d: "Refresh and wake up your senses physically." },
+            { t: "Put on Clothes", d: "Dress for the person you intend to be today." },
             { t: "Happiness Anchor", d: "Recall a joy or play your favorite song." },
             { t: "The Intention", d: "Decide on your emotional focus for today.", input: "Today's Intention: " },
             { t: "Gratitude Scan", d: "One thing you're genuinely glad to have.", time: 30 },
-            { t: "Negative Input Shield", d: "Keep the phone away from news/socials for now." },
-            { t: "Breakfast!", d: "Fuel your body for a great day ahead." }
+            { t: "Breakfast!", d: "Fuel your body for the day ahead." },
+            { t: "Negative Input Shield", d: "Keep the phone away from news/socials for a while longer." }
         ],
         reset: [
             { t: "24-Hour Promise", d: "Re-commit to one small action.", input: "New Promise: " },
